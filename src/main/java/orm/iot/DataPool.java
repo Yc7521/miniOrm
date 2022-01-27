@@ -25,6 +25,10 @@ public class DataPool {
         if (obj == null || data.containsKey(clazz)) {
             return false;
         }
+        for (Class<?> anInterface : clazz.getInterfaces()) {
+            if (data.containsKey(anInterface)) continue;
+            data.put(anInterface, obj);
+        }
         data.put(clazz, obj);
         return true;
     }
