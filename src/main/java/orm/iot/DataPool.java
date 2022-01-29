@@ -1,6 +1,10 @@
 package orm.iot;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class DataPool {
     private static volatile DataPool instance;
@@ -21,11 +25,20 @@ public class DataPool {
         return instance;
     }
 
+    /**
+     * set the direct interface(no generic) of the class and itself to map with object
+     */
     protected <T> boolean register(Class<?> clazz, T obj) {
         if (obj == null || data.containsKey(clazz)) {
             return false;
         }
-        for (Class<?> anInterface : clazz.getInterfaces()) {
+        final ArrayList<Class<?>> classes = new ArrayList<>(List.of(clazz.getInterfaces()));
+        for (Type t : clazz.getGenericInterfaces()) {
+            if (t instanceof ParameterizedType pt && pt.getRawType() instanceof Class<?> c) {
+                classes.remove(c);
+            }
+        }
+        for (Class<?> anInterface : classes) {
             if (data.containsKey(anInterface)) continue;
             data.put(anInterface, obj);
         }
@@ -37,6 +50,7 @@ public class DataPool {
         return register(obj.getClass(), obj);
     }
 
+    @SuppressWarnings("unchecked")
     public <T> T get(Class<T> clazz) {
         return (T) data.get(clazz);
     }

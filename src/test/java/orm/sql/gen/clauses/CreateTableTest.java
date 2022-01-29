@@ -1,14 +1,13 @@
-package orm.sql.gen.Clauses;
+package orm.sql.gen.clauses;
 
 import org.junit.Test;
-import orm.iot.DataPool;
 import orm.model.User;
 import orm.sql.gen.tr.TypeTranslate;
 import orm.util.meta.Meta;
 
 import java.util.logging.Logger;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class CreateTableTest {
 

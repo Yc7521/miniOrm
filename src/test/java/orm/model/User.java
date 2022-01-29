@@ -1,7 +1,17 @@
 package orm.model;
 
+import orm.sql.annotations.Id;
+import orm.sql.annotations.Length;
+import orm.sql.annotations.NotNull;
+
 public class User {
-    private String name, password;
+    @Id
+    @NotNull
+    @Length(32)
+    private String name;
+    @NotNull
+    @Length(64)
+    private String password;
     private int age;
 
     public User() {

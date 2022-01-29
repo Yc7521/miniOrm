@@ -1,6 +1,5 @@
-package orm.sql.gen.Clauses;
+package orm.sql.gen.clauses;
 
-import orm.iot.DataPool;
 import orm.sql.gen.tr.Translate;
 import orm.sql.gen.tr.TranslateException;
 import orm.sql.gen.tr.TypeTranslate;
@@ -19,14 +18,18 @@ public class CreateTable<T> {
 
     public String generate() {
         final Translate<Type> typeTranslate = TypeTranslate.getInstance();
-        return "CREATE TABLE `%s` (%s)".formatted(entityMeta.getSimpleName(), Arrays.stream(entityMeta.getFields())
-                .map(field -> {
+        return "CREATE TABLE `%s` (%s)".formatted(entityMeta.getSimpleName(),
+                Arrays.stream(entityMeta.getFields()).map(field -> {
                     final String name = field.getName();
                     try {
                         if (name.equals("id")) {
-                            return "`id` %s PRIMARY KEY AUTOINCREMENT".formatted(typeTranslate.translate(field.getType()));
+                            return "`id` %s PRIMARY KEY".formatted(
+                                    typeTranslate.translate(field.getType(),
+                                            field.getDeclaredAnnotations()));
                         }
-                        return "`%s` %s".formatted(name, typeTranslate.translate(field.getType()));
+                        return "`%s` %s".formatted(name,
+                                typeTranslate.translate(field.getType(),
+                                        field.getDeclaredAnnotations()));
                     } catch (TranslateException ignored) {
                         return name;
                     }

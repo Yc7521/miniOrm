@@ -1,7 +1,11 @@
 package orm.sql.gen.tr;
 
 import orm.iot.DataPool;
+import orm.sql.annotations.Id;
+import orm.sql.annotations.Length;
+import orm.sql.annotations.NotNull;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -14,7 +18,7 @@ public class TypeTranslate implements Translate<Type> {
     Map<Type, String> mapping = new HashMap<>();
 
     public TypeTranslate() {
-        mapping.put(String.class, "VARCHAR(256)");
+        mapping.put(String.class, "VARCHAR");
         mapping.put(Integer.class, "INTEGER");
         mapping.put(int.class, "INTEGER");
         mapping.put(Long.class, "BIGINT");
@@ -27,7 +31,7 @@ public class TypeTranslate implements Translate<Type> {
         mapping.put(double.class, "DOUBLE");
         mapping.put(Float.class, "FLOAT");
         mapping.put(float.class, "FLOAT");
-        mapping.put(BigDecimal.class, "DECIMAL()");
+        mapping.put(BigDecimal.class, "DECIMAL");
         mapping.put(Boolean.class, "BOOLEAN");
         mapping.put(boolean.class, "BOOLEAN");
         mapping.put(Date.class, "DATE");
@@ -50,9 +54,27 @@ public class TypeTranslate implements Translate<Type> {
     }
 
     @Override
-    public String translate(Type obj) throws TranslateException {
+    public String translate(Type obj,
+                            Annotation[] annotations) throws TranslateException {
         if (mapping.containsKey(obj)) {
-            return mapping.get(obj);
+            final StringBuilder res = new StringBuilder(mapping.get(obj));
+            if (annotations != null) {
+                for (Annotation annotation : annotations) {
+                    if (annotation instanceof Length length && obj.equals(String.class)) {
+                        res.append("(").append(length.value()).append(")");
+                    }
+                }
+                for (Annotation annotation : annotations) {
+                    if (annotation instanceof NotNull notNull) {
+                        res.append(notNull.value() ? " NOT NULL" : " NULL");
+                    } else if (annotation instanceof Id id) {
+                        res.append(" PRIMARY KEY")
+                           .append((!obj.equals(String.class) && id.autoIncrement())
+                                   ? " AUTO_INCREMENT" : "");
+                    }
+                }
+            }
+            return res.toString();
         } else {
             throw new TranslateException("Type not support");
         }
