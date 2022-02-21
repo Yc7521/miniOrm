@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class TypeTranslate implements Translate<Type> {
-    Map<Type, String> mapping = new HashMap<>();
+    protected Map<Type, String> mapping = new HashMap<>();
 
     public TypeTranslate() {
         mapping.put(String.class, "VARCHAR");

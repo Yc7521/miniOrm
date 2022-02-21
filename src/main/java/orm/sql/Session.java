@@ -12,13 +12,14 @@ public class Session implements AutoCloseable {
         this.connection = connection;
     }
 
-    public int query(String sql, Object... args) throws SQLException {
-        try (final PreparedStatement statement = connection.prepareStatement(sql)) {
-            for (int i = 0; i < args.length; i++) {
-                statement.setObject(i + 1, args[i]);
+    public int query(Statement statement) throws SQLException {
+        final Object[] params = statement.params();
+        try (final PreparedStatement ps = connection.prepareStatement(statement.sql())) {
+            for (int i = 0; i < params.length; i++) {
+                ps.setObject(i + 1, params[i]);
             }
-            if (statement.execute()) {
-                try (final ResultSet resultSet = statement.getResultSet()) {
+            if (ps.execute()) {
+                try (final ResultSet resultSet = ps.getResultSet()) {
                     int count = 0;
                     while (resultSet.next()) {
                         count++;
@@ -26,7 +27,7 @@ public class Session implements AutoCloseable {
                     return count;
                 }
             } else {
-                return statement.getUpdateCount();
+                return ps.getUpdateCount();
             }
         }
     }

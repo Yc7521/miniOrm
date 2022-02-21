@@ -1,4 +1,9 @@
 package orm.sql.gen.clauses;
 
-public class Insert {
+import orm.util.meta.Meta;
+
+public class Insert<T> extends Clause<T> {
+    public Insert(Meta<T> meta) {
+        super(meta);
+    }
 }

@@ -9,27 +9,22 @@ import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-public class CreateTable<T> {
-    private final Meta<T> entityMeta;
-
+public class CreateTable<T> extends Clause<T> {
     public CreateTable(Meta<T> meta) {
-        this.entityMeta = meta;
+        super(meta);
     }
 
     public String generate() {
         final Translate<Type> typeTranslate = TypeTranslate.getInstance();
-        return "CREATE TABLE `%s` (%s)".formatted(entityMeta.getSimpleName(),
-                Arrays.stream(entityMeta.getFields()).map(field -> {
+        return "CREATE TABLE `%s` (%s)".formatted(getTableName(),
+                Arrays.stream(getFields()).map(field -> {
                     final String name = field.getName();
                     try {
-                        if (name.equals("id")) {
-                            return "`id` %s PRIMARY KEY".formatted(
-                                    typeTranslate.translate(field.getType(),
-                                            field.getDeclaredAnnotations()));
-                        }
-                        return "`%s` %s".formatted(name,
+                        String temp = "`%s` %s".formatted(name,
                                 typeTranslate.translate(field.getType(),
                                         field.getDeclaredAnnotations()));
+                        if (!name.equals("id")) return temp;
+                        return temp + " PRIMARY KEY";
                     } catch (TranslateException ignored) {
                         return name;
                     }
