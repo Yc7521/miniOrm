@@ -1,41 +1,25 @@
 package orm.sql.gen.clauses;
 
-import orm.sql.annotations.Id;
+import orm.sql.Statement;
 import orm.util.meta.Meta;
-
-import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.Optional;
-import java.util.stream.Stream;
+import orm.util.meta.TableMeta;
 
 public class Clause<T> {
-    private final Meta<T> entityMeta;
+    private final TableMeta<T> meta;
+
+    public Clause(TableMeta<T> meta) {
+        this.meta = meta;
+    }
 
     public Clause(Meta<T> meta) {
-        this.entityMeta = meta;
+        this.meta = new TableMeta<>(meta);
     }
 
-    public Meta<T> getEntityMeta() {
-        return entityMeta;
+    public TableMeta<T> getMeta() {
+        return meta;
     }
 
-    protected String getTableName() {
-        return getEntityMeta().getSimpleName();
-    }
-
-    protected Optional<Field> getIdColumn() {
-        final Stream<Field> id = Arrays
-                .stream(getFields())
-                .filter(field -> field.isAnnotationPresent(Id.class) ||
-                                 field.getName().equals("id"));
-        return id.findFirst();
-    }
-
-    protected Optional<String> getIdColumnName() {
-        return getIdColumn().map(Field::getName);
-    }
-
-    protected Field[] getFields() {
-        return getEntityMeta().getFields();
+    public Statement generate() throws IllegalAccessException {
+        throw new UnsupportedOperationException("Not implemented");
     }
 }

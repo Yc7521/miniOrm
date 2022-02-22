@@ -13,6 +13,8 @@ public final class Statement implements Serializable {
     private final Object[] params;
 
     private Statement(String sql, Object[] params) {
+        assert sql != null;
+        assert params != null;
         this.sql = sql;
         this.params = params;
     }
@@ -68,25 +70,28 @@ public final class Statement implements Serializable {
         return params;
     }
 
+    public boolean hasParams() {
+        assert params != null;
+        return params.length > 0;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (obj == this) return true;
         if (obj == null || obj.getClass() != this.getClass()) return false;
         var that = (Statement) obj;
         return Objects.equals(this.sql, that.sql) &&
-               Objects.equals(this.params, that.params);
+               Arrays.equals(this.params, that.params);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(sql, params);
+        return Objects.hash(sql, Arrays.hashCode(params));
     }
 
     @Override
     public String toString() {
-        return "Statement[" +
-               "sql=" + sql + ", " +
-               "params=" + params + ']';
+        return "{sql=%s, params=%s}".formatted(sql, Arrays.toString(params));
     }
 
 }

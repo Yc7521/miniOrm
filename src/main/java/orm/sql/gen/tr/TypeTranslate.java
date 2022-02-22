@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class TypeTranslate implements Translate<Type> {
-    protected Map<Type, String> mapping = new HashMap<>();
+    protected final Map<Type, String> mapping = new HashMap<>();
 
     public TypeTranslate() {
         mapping.put(String.class, "VARCHAR");
@@ -45,7 +45,11 @@ public class TypeTranslate implements Translate<Type> {
     }
 
     public static TypeTranslate getInstance() {
-        return DataPool.getInstance().get(TypeTranslate.class);
+        final TypeTranslate typeTranslate = DataPool
+          .getInstance()
+          .get(TypeTranslate.class);
+        assert typeTranslate != null : "TypeTranslate need register";
+        return typeTranslate;
     }
 
     public void register(Type type, String name) {
@@ -68,9 +72,9 @@ public class TypeTranslate implements Translate<Type> {
                     if (annotation instanceof NotNull notNull) {
                         res.append(notNull.value() ? " NOT NULL" : " NULL");
                     } else if (annotation instanceof Id id) {
-                        res.append(" PRIMARY KEY")
-                           .append((!obj.equals(String.class) && id.autoIncrement())
-                                   ? " AUTO_INCREMENT" : "");
+                        res.append(" PRIMARY KEY").append(
+                          (!obj.equals(String.class) && id.autoIncrement())
+                            ? " AUTO_INCREMENT" : "");
                     }
                 }
             }

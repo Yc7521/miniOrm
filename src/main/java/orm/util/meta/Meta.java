@@ -1,10 +1,10 @@
 package orm.util.meta;
 
-import orm.iot.DataPool;
-
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 public class Meta<T> {
@@ -17,6 +17,7 @@ public class Meta<T> {
      * @param value a value(must not null)
      */
     private Meta(T value) {
+        assert value != null;
         this.value = value;
         this.clazz = value.getClass();
     }
@@ -64,12 +65,20 @@ public class Meta<T> {
         return value;
     }
 
+    public boolean hasValue() {
+        return value != null;
+    }
+
     public String getName() {
         return clazz.getName();
     }
 
     public String getSimpleName() {
         return clazz.getSimpleName();
+    }
+
+    public Annotation[] getDeclaredAnnotations() {
+        return clazz.getDeclaredAnnotations();
     }
 
     public Field[] getFields() {
@@ -80,7 +89,26 @@ public class Meta<T> {
         return clazz.getDeclaredField(name);
     }
 
+    public Object[] getFieldValues() throws IllegalAccessException {
+        assert hasValue();
+        AtomicReference<IllegalAccessException> err = new AtomicReference<>(null);
+        final Object[] res = Arrays.stream(clazz.getDeclaredFields()).map(field -> {
+            field.setAccessible(true);
+            try {
+                return field.get(value);
+            } catch (IllegalAccessException e) {
+                err.set(e);
+                return null;
+            }
+        }).toArray();
+        if (err.get() != null) {
+            throw err.get();
+        }
+        return res;
+    }
+
     public Object getFieldValue(String name) throws NoSuchFieldException, IllegalAccessException {
+        assert hasValue();
         final Field field = getField(name);
         field.setAccessible(true);
         return field.get(value);
@@ -88,6 +116,7 @@ public class Meta<T> {
 
     public void setField(String name,
                          Object obj) throws NoSuchFieldException, IllegalAccessException {
+        assert hasValue();
         final Field field = getField(name);
         field.setAccessible(true);
         field.set(value, obj);
@@ -99,28 +128,34 @@ public class Meta<T> {
      * @return a {@link Meta} contains a new instance of class
      * @throws NoSuchMethodException if not has a none parameter constructor
      */
+    @SuppressWarnings("unchecked")
     public Meta<T> newInstance() throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         return new Meta<>((T) clazz.getDeclaredConstructor().newInstance(), clazz);
     }
 
     public String toValueString() {
+        assert hasValue();
         final Field[] fields = getFields();
-        return "Meta<%s>{%s}".formatted(clazz.getSimpleName(), Arrays.stream(fields)
-                .map(field -> {
-                    field.setAccessible(true);
-                    try {
-                        return field.getName() + "=" + field.get(value);
-                    } catch (IllegalAccessException ignored) {
-                        return field.getName() + "=error";
-                    }
-                }).collect(Collectors.joining(", ")));
+        return "Meta<%s>{%s}".formatted(clazz.getSimpleName(),
+          Arrays.stream(fields).map(field -> {
+              field.setAccessible(true);
+              try {
+                  return field.getName() + "=" + field.get(value);
+              } catch (IllegalAccessException ignored) {
+                  return field.getName() + "=error";
+              }
+          }).collect(Collectors.joining(", "))
+        );
     }
 
     @Override
     public String toString() {
         final Field[] fields = getFields();
-        return "Meta<%s>{%s}".formatted(clazz.getSimpleName(), Arrays.stream(fields)
-                .map(field -> field.getName() + "=" + field.getType().getTypeName())
-                .collect(Collectors.joining(", ")));
+        return "Meta<%s>{%s}".formatted(clazz.getSimpleName(),
+          Arrays
+            .stream(fields)
+            .map(field -> field.getName() + "=" + field.getType().getTypeName())
+            .collect(Collectors.joining(", "))
+        );
     }
 }

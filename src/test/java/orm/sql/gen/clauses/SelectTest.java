@@ -11,14 +11,14 @@ public class SelectTest {
     @Test
     public void generateEmpty() {
         Select<User> userSelect = new Select<>(Meta.of(User.class));
-        assertEquals("SELECT * FROM User", userSelect.generate().sql());
+        assertEquals("SELECT * FROM `user`", userSelect.generate().sql());
     }
 
     @Test
     public void genWithParam() {
         Select<User> userSelect = new Select<>(Meta.of(User.class));
         final Statement build = userSelect.where().byId("name").build();
-        assertEquals("SELECT * FROM User WHERE name = ?", build.sql());
+        assertEquals("SELECT * FROM `user` WHERE `name` = ?", build.sql());
         assertEquals("name", build.params()[0]);
     }
 
@@ -31,7 +31,7 @@ public class SelectTest {
                 .and()
                     .by("age", 18)
                 .build();
-        assertEquals("SELECT * FROM User WHERE name = ? AND age = ?", build.sql());
+        assertEquals("SELECT * FROM `user` WHERE `name` = ? AND `age` = ?", build.sql());
         assertEquals("xxx", build.params()[0]);
         assertEquals(18, build.params()[1]);
     }

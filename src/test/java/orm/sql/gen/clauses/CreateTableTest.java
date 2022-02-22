@@ -7,15 +7,13 @@ import orm.util.meta.Meta;
 
 import java.util.logging.Logger;
 
-import static org.junit.Assert.assertEquals;
-
 public class CreateTableTest {
 
     @Test
     public void generate() {
         TypeTranslate.register();
         CreateTable<User> table = new CreateTable<>(Meta.of(User.class));
-        Logger.getGlobal().info(table.generate());
+        Logger.getGlobal().info(table.generate().toString());
     }
 
 }

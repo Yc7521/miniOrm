@@ -1,14 +1,23 @@
 package orm.sql.gen.clauses;
 
-import com.mysql.cj.xdevapi.PreparableStatement;
 import orm.sql.Statement;
 import orm.util.meta.Meta;
+import orm.util.meta.TableMeta;
 
 import java.util.ArrayList;
 
 public class Where<T> extends Clause<T> {
+    public Where(TableMeta<T> meta) {
+        super(meta);
+    }
+
     public Where(Meta<T> meta) {
         super(meta);
+    }
+
+    @Override
+    public Statement generate() throws UnsupportedOperationException {
+        throw new UnsupportedOperationException("Not implemented");
     }
 
     public WhereBuilder builder() {
@@ -29,24 +38,26 @@ public class Where<T> extends Clause<T> {
         }
 
         public LogicBuilder byId(Object id) {
-            statements.add(Statement.of(getIdColumnName().orElseThrow() + " = ?", id));
+            statements.add(Statement.of("`%s` = ?".formatted(getMeta()
+              .getIdColumnName()
+              .orElseThrow()), id));
             return new LogicBuilder();
         }
 
         public LogicBuilder by(String columnName, Object value) {
-            statements.add(Statement.of(columnName + " = ?", value));
+            statements.add(Statement.of("`%s` = ?".formatted(columnName), value));
             return new LogicBuilder();
         }
 
         public LogicBuilder by(String columnName, Operator operator, Object value) {
-            statements.add(
-                    Statement.of("%s %s ?".formatted(columnName, operator.getOperator()),
-                            value));
+            statements.add(Statement.of("`%s` %s ?".formatted(columnName,
+              operator.getOperator()
+            ), value));
             return new LogicBuilder();
         }
 
         public LogicBuilder like(String columnName, Object value) {
-            statements.add(Statement.of("%s LIKE ?".formatted(columnName), value));
+            statements.add(Statement.of("`%s` LIKE ?".formatted(columnName), value));
             return new LogicBuilder();
         }
 

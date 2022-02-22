@@ -33,7 +33,7 @@ switch(obj) {
 * create table
   * using util to get type list
 * select
-  * easy to support but how to convert to a object
+  * easy to support but how to convert to an object
   * may use field name to get value
 * update
   * as same as select
@@ -41,8 +41,8 @@ switch(obj) {
   * not need to specify, just need to implement where clause
 * where clause
   * two ways to implement
-  * a expression like op list which uses logic operations to bind
-  * a attribution to specific sql clause (recommended)
+  * an expression like op list which uses logic operations to bind
+  * an attribution to specific sql clause (recommended)
   * a function to translate %(\\%) and \_(\\_)
   * [where](https://www.runoob.com/mysql/mysql-where-clause.html) clause
 

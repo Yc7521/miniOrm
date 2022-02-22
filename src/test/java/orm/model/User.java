@@ -3,7 +3,9 @@ package orm.model;
 import orm.sql.annotations.Id;
 import orm.sql.annotations.Length;
 import orm.sql.annotations.NotNull;
+import orm.sql.annotations.Table;
 
+@Table(name = "user")
 public class User {
     @Id
     @NotNull
