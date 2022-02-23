@@ -50,7 +50,8 @@ public class Where<T> extends Clause<T> {
         }
 
         public LogicBuilder by(String columnName, Operator operator, Object value) {
-            statements.add(Statement.of("`%s` %s ?".formatted(columnName,
+            statements.add(Statement.of("`%s` %s ?".formatted(
+              columnName,
               operator.getOperator()
             ), value));
             return new LogicBuilder();

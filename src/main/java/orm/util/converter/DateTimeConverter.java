@@ -13,7 +13,7 @@ public class DateTimeConverter implements Converter<LocalDateTime, String> {
     @Override
     public String format(LocalDateTime value) {
         return value.format(new DateTimeFormatterBuilder().parseCaseInsensitive()
-                .append(DateTimeFormatter.ISO_LOCAL_DATE).appendLiteral(' ')
-                .append(DateTimeFormatter.ISO_LOCAL_TIME).toFormatter());
+          .append(DateTimeFormatter.ISO_LOCAL_DATE).appendLiteral(' ')
+          .append(DateTimeFormatter.ISO_LOCAL_TIME).toFormatter());
     }
 }

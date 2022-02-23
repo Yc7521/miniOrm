@@ -43,7 +43,9 @@ public class Session implements AutoCloseable {
         final Statement statement = new Delete<>(Meta.of(object)).generate();
         execute(statement);
     }
-    public <T> void removeAll(Class<T> clazz) throws SQLException, IllegalAccessException {
+
+    public <T> void removeAll(Class<T> clazz)
+      throws SQLException, IllegalAccessException {
         final Statement statement = new Delete<>(Meta.of(clazz)).generate();
         execute(statement);
     }
@@ -99,7 +101,8 @@ public class Session implements AutoCloseable {
     }
 
     public <T> T query(Class<T> clazz, Statement statement)
-      throws SQLException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, NoSuchFieldException {
+      throws SQLException, InvocationTargetException, NoSuchMethodException,
+             InstantiationException, IllegalAccessException, NoSuchFieldException {
         final Meta<T> meta = Meta.of(clazz).newInstance();
         try {
             statement.load(this).result(rs -> {
@@ -120,7 +123,8 @@ public class Session implements AutoCloseable {
     }
 
     public <T> List<T> queryAll(Class<T> clazz, Statement statement)
-      throws SQLException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, NoSuchFieldException {
+      throws SQLException, InvocationTargetException, NoSuchMethodException,
+             InstantiationException, IllegalAccessException, NoSuchFieldException {
         final Meta<T> meta = Meta.of(clazz);
         List<T> list = new java.util.ArrayList<>();
         try {

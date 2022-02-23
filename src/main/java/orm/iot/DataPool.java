@@ -32,9 +32,11 @@ public class DataPool {
         if (obj == null || data.containsKey(clazz)) {
             return false;
         }
-        final ArrayList<Class<?>> classes = new ArrayList<>(List.of(clazz.getInterfaces()));
+        final ArrayList<Class<?>> classes
+          = new ArrayList<>(List.of(clazz.getInterfaces()));
         for (Type t : clazz.getGenericInterfaces()) {
-            if (t instanceof ParameterizedType pt && pt.getRawType() instanceof Class<?> c) {
+            if (t instanceof ParameterizedType pt &&
+                pt.getRawType() instanceof Class<?> c) {
                 classes.remove(c);
             }
         }

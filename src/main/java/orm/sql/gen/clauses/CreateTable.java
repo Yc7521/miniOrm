@@ -22,12 +22,15 @@ public class CreateTable<T> extends Clause<T> {
     @Override
     public Statement generate() {
         final Translate<Type> typeTranslate = TypeTranslate.getInstance();
-        return Statement.of("CREATE TABLE `%s` (%s)".formatted(getMeta().getTableName(),
+        return Statement.of("CREATE TABLE `%s` (%s)".formatted(
+          getMeta().getTableName(),
           Arrays.stream(getMeta().getFields()).map(field -> {
               final String name = field.getName();
               try {
-                  String temp = "`%s` %s".formatted(name,
-                    typeTranslate.translate(field.getType(),
+                  String temp = "`%s` %s".formatted(
+                    name,
+                    typeTranslate.translate(
+                      field.getType(),
                       field.getDeclaredAnnotations()
                     )
                   );

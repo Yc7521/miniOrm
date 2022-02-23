@@ -6,13 +6,15 @@ import orm.model.User;
 import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Logger;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class MetaTest {
     final Logger global = Logger.getGlobal();
 
     @Test
-    public void testNew() throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, NoSuchFieldException {
+    public void testNew()
+      throws InvocationTargetException, NoSuchMethodException, InstantiationException,
+             IllegalAccessException, NoSuchFieldException {
         Meta<User> meta = Meta.of(User.class);
         global.info(meta.toString());
         meta = meta.newInstance();

@@ -46,7 +46,8 @@ public final class Statement implements Serializable {
         int offset = 0;
         for (Statement statement : statements) {
             sql.append(statement.sql);
-            System.arraycopy(statement.params,
+            System.arraycopy(
+              statement.params,
               0,
               objects,
               offset,
@@ -64,7 +65,8 @@ public final class Statement implements Serializable {
     public Statement append(Statement statement) {
         final Object[] objects = new Object[this.params.length + statement.params.length];
         System.arraycopy(this.params, 0, objects, 0, this.params.length);
-        System.arraycopy(statement.params,
+        System.arraycopy(
+          statement.params,
           0,
           objects,
           this.params.length,
@@ -95,7 +97,8 @@ public final class Statement implements Serializable {
         if (obj == this) return true;
         if (obj == null || obj.getClass() != this.getClass()) return false;
         var that = (Statement) obj;
-        return Objects.equals(this.sql, that.sql) && Arrays.equals(this.params,
+        return Objects.equals(this.sql, that.sql) && Arrays.equals(
+          this.params,
           that.params
         );
     }
@@ -150,7 +153,8 @@ public final class Statement implements Serializable {
          * @param update call if the first result is an update count or there is no result
          */
         private int execute(FunctionEx<ResultSet, Integer> select,
-                            FunctionEx<PreparedStatement, Integer> update) throws Exception {
+                            FunctionEx<PreparedStatement, Integer> update)
+          throws Exception {
             assert select != null;
             final Object[] params = statement.params();
             try (final PreparedStatement ps = session.getConnection().prepareStatement(
@@ -202,5 +206,4 @@ public final class Statement implements Serializable {
             });
         }
     }
-
 }

@@ -5,7 +5,8 @@ import orm.model.User;
 import orm.sql.Statement;
 import orm.util.meta.Meta;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 
 public class InsertTest {
     @Test

@@ -115,15 +115,16 @@ public class Meta<T> {
         return res;
     }
 
-    public Object getFieldValue(String name) throws NoSuchFieldException, IllegalAccessException {
+    public Object getFieldValue(String name)
+      throws NoSuchFieldException, IllegalAccessException {
         assert hasValue();
         final Field field = getField(name);
         field.setAccessible(true);
         return field.get(value);
     }
 
-    public void setField(String name,
-                         Object obj) throws NoSuchFieldException, IllegalAccessException {
+    public void setField(String name, Object obj)
+      throws NoSuchFieldException, IllegalAccessException {
         assert hasValue();
         final Field field = getField(name);
         field.setAccessible(true);
@@ -137,14 +138,17 @@ public class Meta<T> {
      * @throws NoSuchMethodException if not has a none parameter constructor
      */
     @SuppressWarnings("unchecked")
-    public Meta<T> newInstance() throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+    public Meta<T> newInstance()
+      throws NoSuchMethodException, InvocationTargetException, InstantiationException,
+             IllegalAccessException {
         return new Meta<>((T) clazz.getDeclaredConstructor().newInstance(), clazz);
     }
 
     public String toValueString() {
         assert hasValue();
         final Field[] fields = getFields();
-        return "Meta<%s>{%s}".formatted(clazz.getSimpleName(),
+        return "Meta<%s>{%s}".formatted(
+          clazz.getSimpleName(),
           Arrays.stream(fields).map(field -> {
               field.setAccessible(true);
               try {
@@ -159,7 +163,8 @@ public class Meta<T> {
     @Override
     public String toString() {
         final Field[] fields = getFields();
-        return "Meta<%s>{%s}".formatted(clazz.getSimpleName(),
+        return "Meta<%s>{%s}".formatted(
+          clazz.getSimpleName(),
           Arrays
             .stream(fields)
             .map(field -> field.getName() + "=" + field.getType().getTypeName())
