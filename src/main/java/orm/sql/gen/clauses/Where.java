@@ -61,7 +61,7 @@ public class Where<T> extends Clause<T> {
             return new LogicBuilder();
         }
 
-        public Statement build() {
+        public Statement end() {
             return Statement.of(statements);
         }
 
@@ -76,7 +76,7 @@ public class Where<T> extends Clause<T> {
                 return WhereBuilder.this;
             }
 
-            public Statement build() {
+            public Statement end() {
                 return Statement.of(statements);
             }
         }

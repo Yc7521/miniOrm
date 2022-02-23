@@ -85,6 +85,14 @@ public class Meta<T> {
         return clazz.getDeclaredFields();
     }
 
+    public String[] getFieldNames() {
+        return Arrays
+          .stream(clazz.getDeclaredFields())
+          .map(Field::getName)
+          .toArray(String[]::new);
+    }
+
+
     public Field getField(String name) throws NoSuchFieldException {
         return clazz.getDeclaredField(name);
     }

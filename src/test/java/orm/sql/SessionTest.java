@@ -1,5 +1,7 @@
 package orm.sql;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import orm.model.User;
@@ -45,21 +47,42 @@ public class SessionTest {
     @Test
     public void delete() throws SQLException, IllegalAccessException {
         session.remove(user);
+        session.removeAll(User.class);
     }
 
     @Test
-    public void insert() throws SQLException, IllegalAccessException, NoSuchFieldException {
+    public void insert()
+      throws SQLException, IllegalAccessException, NoSuchFieldException {
         delete();
-        logger.info(String.valueOf(session.insert(user)));
+        session.insert(user);
+        var list = new User[]{new User("test_2", "none2", 18), new User(
+          "test_3",
+          "none3",
+          18
+        ), new User("test_4", "none4", 18),};
+        session.saveAll(list);
     }
 
     @Test
-    public void select() throws SQLException, NoSuchFieldException, IllegalAccessException {
+    public void select() throws Exception {
+        // init the data
         insert();
-        assertEquals(
-          1,
-          session.query(session.select(User.class).where().by("name", "test_1").build())
-        );
+        // create the select statement
+        final Statement statement = session.select(User.class).where().by(
+          "name",
+          "test_1"
+        ).end();
+        // Test: execute the statement
+        assertEquals(1, session.execute(statement));
+        // Test: get the result
+        final User data = session.query(User.class, statement);
+        assertEquals(user, data);
+        // Log: get all the data
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        logger.info(gson.toJson(session.queryAll(
+          User.class,
+          session.select(User.class).end()
+        )));
     }
 
     @Test

@@ -47,6 +47,18 @@ public class TableMeta<T> {
         return getIdColumn().map(Field::getName);
     }
 
+    public Optional<Object> getIdColumnValue() {
+        assert hasValue();
+        return getIdColumn().map(field -> {
+            field.setAccessible(true);
+            try {
+                return getEntityMeta().getFieldValue(field.getName());
+            } catch (Exception e) {
+                return null;
+            }
+        });
+    }
+
     public Field[] getFields() {
         return getEntityMeta().getFields();
     }

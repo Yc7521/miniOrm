@@ -23,7 +23,7 @@ public class Delete<T> extends Clause<T> {
                     error.set(true);
                 }
                 return null;
-            }).orElseThrow()).build();
+            }).orElseThrow()).end();
             if (error.get()) {
                 throw new IllegalAccessException("Cannot delete entity");
             }

@@ -5,6 +5,8 @@ import orm.sql.annotations.Length;
 import orm.sql.annotations.NotNull;
 import orm.sql.annotations.Table;
 
+import java.util.Objects;
+
 @Table(name = "user")
 public class User {
     @Id
@@ -47,6 +49,20 @@ public class User {
 
     public void setAge(int age) {
         this.age = age;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return age == user.age && Objects.equals(name, user.name) &&
+               Objects.equals(password, user.password);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, password, age);
     }
 
     @Override

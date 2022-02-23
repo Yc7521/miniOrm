@@ -19,8 +19,17 @@ public class Select<T> extends Clause<T> {
         return Statement.of(statements);
     }
 
-    public Where<T>.WhereBuilder where() {
-        return new Where<>(getMeta()).new WhereBuilder(this.statements);
+    public SelectBuilder builder() {
+        return new SelectBuilder();
     }
 
+    public class SelectBuilder {
+        public Where<T>.WhereBuilder where() {
+            return new Where<>(getMeta()).new WhereBuilder(statements);
+        }
+
+        public Statement end() {
+            return Statement.of(statements);
+        }
+    }
 }

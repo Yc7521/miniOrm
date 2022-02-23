@@ -5,7 +5,7 @@ import orm.model.User;
 import orm.sql.Statement;
 import orm.util.meta.Meta;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class SelectTest {
     @Test
@@ -16,21 +16,18 @@ public class SelectTest {
 
     @Test
     public void genWithParam() {
-        Select<User> userSelect = new Select<>(Meta.of(User.class));
-        final Statement build = userSelect.where().byId("name").build();
+        Select<User>.SelectBuilder userSelect
+          = new Select<>(Meta.of(User.class)).builder();
+        final Statement build = userSelect.where().byId("name").end();
         assertEquals("SELECT * FROM `user` WHERE `name` = ?", build.sql());
         assertEquals("name", build.params()[0]);
     }
 
     @Test
     public void genWithParam2() {
-        Select<User> userSelect = new Select<>(Meta.of(User.class));
-        final Statement build = userSelect
-                .where()
-                    .byId("xxx")
-                .and()
-                    .by("age", 18)
-                .build();
+        Select<User>.SelectBuilder userSelect
+          = new Select<>(Meta.of(User.class)).builder();
+        final Statement build = userSelect.where().byId("xxx").and().by("age", 18).end();
         assertEquals("SELECT * FROM `user` WHERE `name` = ? AND `age` = ?", build.sql());
         assertEquals("xxx", build.params()[0]);
         assertEquals(18, build.params()[1]);
